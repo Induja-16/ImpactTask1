@@ -38,26 +38,14 @@ window.addEventListener('load', function () {
 <script>
   document.getElementById("send-data-btn").addEventListener("click", function () {
   
-    // Get values from dataLayer (latest pushed values)
-    var productName = "";
-    var productPrice = "";
+    // Get latest dataLayer object
+    const lastEvent = window.dataLayer[window.dataLayer.length - 1];
   
-    // Loop through dataLayer to find last productView event
-    for (var i = window.dataLayer.length - 1; i >= 0; i--) {
-      if (window.dataLayer[i].productName) {
-        productName = window.dataLayer[i].productName;
-        productPrice = window.dataLayer[i].productPrice;
-        break;
-      }
-    }
-  
-    // Create request body
-    var requestData = {
-      productName: productName,
-      productPrice: productPrice
+    const requestData = {
+      productName: lastEvent.productName,
+      productPrice: lastEvent.productPrice
     };
   
-    // Send POST request
     fetch("https://httpbin.org/post", {
       method: "POST",
       headers: {
@@ -65,13 +53,9 @@ window.addEventListener('load', function () {
       },
       body: JSON.stringify(requestData)
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log("API Response:", data);
-    })
-    .catch(error => {
-      console.error("Error:", error);
-    });
+    .then(res => res.json())
+    .then(data => console.log("API Response:", data))
+    .catch(err => console.error("Error:", err));
   
   });
   </script>
