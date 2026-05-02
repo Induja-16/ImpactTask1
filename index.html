@@ -18,6 +18,7 @@
 
 <h1 id="product-name">Super Widget</h1>
 <span id="product-price">19.99</span>
+<button id="send-data-btn">Send Product Data</button>
 
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -34,5 +35,47 @@ window.addEventListener('load', function () {
 });
 </script>
 
+<script>
+  document.getElementById("send-data-btn").addEventListener("click", function () {
+  
+    // Get values from dataLayer (latest pushed values)
+    var productName = "";
+    var productPrice = "";
+  
+    // Loop through dataLayer to find last productView event
+    for (var i = window.dataLayer.length - 1; i >= 0; i--) {
+      if (window.dataLayer[i].productName) {
+        productName = window.dataLayer[i].productName;
+        productPrice = window.dataLayer[i].productPrice;
+        break;
+      }
+    }
+  
+    // Create request body
+    var requestData = {
+      productName: productName,
+      productPrice: productPrice
+    };
+  
+    // Send POST request
+    fetch("https://httpbin.org/post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("API Response:", data);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
+  
+  });
+  </script>
+
 </body>
 </html>
+
