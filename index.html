@@ -16,17 +16,22 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
+    
 <h1 id="product-name">Super Widget</h1>
 <span id="product-price">19.99</span>
 <button id="send-data-btn">Send Product Data</button>
 
 <script>
+
+  // Ensure dataLayer exists
 window.dataLayer = window.dataLayer || [];
 
+// When page loads, push product data to GTM
 window.addEventListener('load', function () {
   var productName = document.getElementById('product-name').innerText;
   var productPrice = document.getElementById('product-price').innerText;
 
+   // Push event and data into dataLayer
   dataLayer.push({
     event: 'productView',
     productName: productName,
@@ -38,19 +43,22 @@ window.addEventListener('load', function () {
 <script>
   document.getElementById("send-data-btn").addEventListener("click", function () {
   
-    // Get latest dataLayer object
+    // Get latest event from dataLayer
     const lastEvent = window.dataLayer[window.dataLayer.length - 1];
-    if (!lastEvent || !lastEvent.productName) {
-      console.error("Product data not found in dataLayer");
+
+    // Handling error
+    if (!lastEvent) {
+      console.error("No data found in dataLayer");
       return;
     }
   
+   // Create request body using dataLayer values
     const requestData = {
       productName: lastEvent.productName,
       productPrice: lastEvent.productPrice
     };
 
-  // Sending API Request
+  // Sending API POST Request
     fetch("https://httpbin.org/post", {
       method: "POST",
       headers: {
